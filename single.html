@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bistro Babushka</title>
+    <style>
+        img {
+            max-width: 100%
+        }
+
+        .liste {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-gap: 10px;
+            padding-top: 25px;
+            padding: 10px;
+        }
+
+        @media only screen and (min-width: 770px) {
+            .liste {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+
+        @media only screen and (min-width: 1024px) {
+            .liste {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+
+        .menu {
+            text-align: center;
+        }
+
+        .valgt {
+            color: orange;
+        }
+
+        h1,
+        h3,
+        p {
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 40px;
+        }
+
+
+
+        #single {
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: orange;
+            text-align: center;
+        }
+
+        #indhold {
+            min-height: 50vh;
+            background-color: white;
+            width: 70vw;
+            margin: 4rem auto;
+        }
+
+        #tilbage {
+            right: 2rem;
+        }
+
+        #tilbage {
+            font-size: 2rem;
+            padding: 1rem 2rem;
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <main id="single">
+        <div id="tilbage">
+            <button>
+                <<</button> </div> <div id="indhold">
+        </div>
+    </main>
+
+
+
+
+    <script>
+        let urlParams = new URLSearchParams(window.location.search)
+        let id = urlParams.get("id");
+
+        let menuKort = [];
+        let filter = "alle";
+
+        document.addEventListener("DOMContentLoaded",
+            start);
+
+        function start() {
+            let dest = document.querySelector(".liste");
+            async function getJson() {
+
+                let jsonData = await fetch("https://mandalskeawebspace.dk/claude_php/clean_up_spreadsheet.php?id=1jxxxFoWBuMJ1qhQ9BQIAyKHmP38XtAF9_sQr0xo5JLo");
+
+                menuKort = await jsonData.json();
+
+                visSingle();
+            }
+
+            function visSingle() {
+                let dest = document.querySelector("#indhold");
+
+                dest.innerHTML = "";
+                menuKort.forEach(ret => {
+                    if (ret.id == id) {
+                        let template =
+                            `<article class="ret">
+                                    <img src="billeder/imgs/small/${ret.billede}-sm.jpg" alt="${ret.navn}">
+                                    <h1>${ret.navn}</h1>
+                                    <h3>${ret.lang}</h3>
+                                    <h3>${ret.oprindelse}</h3>
+                                    <p>${ret.pris} kr</p>
+                                </article>
+                        `;
+
+                        document.querySelector("#single").style.display = "block";
+
+                        dest.insertAdjacentHTML("beforeend", template);
+                        dest.lastElementChild.addEventListener("click", () => {
+                            location.href = "kald.html?id" + ret.id;
+                        });
+                    }
+                })
+            }
+
+            getJson();
+
+            document.querySelector("#tilbage button").addEventListener("click", () => {
+                location.href = "kald.html?id"
+            })
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
